@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Game</title>
+<style>
+ #canvas {
+    border:1px solid #dfdfdf;
+    position:absolute;
+}
+#inner{
+    position:absolute;
+    z-index: 10;
+}
+#outer{
+	position:absolute;
+    z-index: 10;
+}
+</style>
+</head>
+<body>
+<canvas id="canvas">
+</canvas>
+<canvas id="inner"></canvas>
+<canvas id="outer"></canvas>
+<script>
+var canvas = document.getElementById("canvas");
+var inner = document.getElementById("inner");
+var outer = document.getElementById("outer");
+var ctx= canvas.getContext("2d");
+var context = inner.getContext("2d");
+var ctxA=outer.getContext("2d");
+var time, newTime,counter=0,newCounter=0;
+var img = new Image();
+img.src="game-background.jpg";
+var bob = new Image();
+bob.src = "bob2.png";
+var spikeA = new Image();
+spikeA.src="spike A.png";
+var spikeB = new Image();
+spikeB.src="spike B.png";
+var spikeC = new Image();
+spikeC.src="spike C.png";
+var spikeD = new Image();
+spikeD.src="spike D.png";
+canvas.height = "550";
+canvas.width = "1400";
+inner.height = "500";
+inner.width = "1400";
+outer.height="550";
+outer.width="1400";
+img.width = "500";
+img.height = "400";
+spikeA.width="270";
+spikeA.height="254";
+spikeB.width="184";
+spikeB.height= "195";
+spikeC.width="149";
+spikeC.height= "299";
+spikeD.width="159";
+spikeD.height= "326";
+bob.style.zIndex= "10";
+img.addEventListener("load",drawImage);
+bob.addEventListener("load",drawMan);
+spikeB.addEventListener("load",addObstacles);
+window.requestAnimationFrame(render);
+var speed =-4;
+var moveA,moveB,moveC,moveD;
+moveA=1400;
+moveB=1400;
+moveC=1400;
+moveD=1400;
+var x=0,i=0,y=0,j=0,count=0,k=1,t=1;
+var x1=0,y1=0,i1=0;
+var request1,request2;
+var spikeX,spikeY;
+function render(){
+	drawImage();
+	drawMan();
+	addObstacles();
+	if(newCounter==0)
+	   request1=window.requestAnimationFrame(render);
+	else
+		window.cancelAnimationFrame(request1);
+}
+function drawImage()
+{
+setTimeout(function(){
+time=window.performance.now();
+ctx.rect(0,0,1400,550);
+ctx.drawImage(img,0,0);
+var pat = ctx.createPattern(img,"repeat-x");
+ctx.fillStyle =pat;
+ctx.fill();
+ctx.translate(speed,0);
+newTime=window.performance.now()-time;
+},newTime);
+}
+function drawMan(){
+   if(i%3==0)
+   {
+   sourceX = x*165;
+   sourceY = y*292.57;
+   context.clearRect(0,180,165,292.57);
+   context.rect(0,180,165,292.57);
+   context.drawImage(bob, sourceX, sourceY,165 , 292.57, 0, 170, 165, 292.57);
+   x++;
+   if(x==12)
+   {
+      x=0;
+      j++;
+      if(j%2==0)
+      	y=1;
+      else
+      	y=0;
+   }
+}
+if((moveA>=-10&&moveA<=90)||(moveB>=-10&&moveB<=90)||(moveC>=-10&&moveC<=90)||(moveD>=-10&&moveD<=90))
+{
+   alert("Game over");
+   newCounter=1;
+}
+i++;
+}
+function addObstacles()
+{
+	if(i%3==0)
+	{
+	spikeX=0;
+	spikeY=0;
+	if(counter==0)
+	{
+	  ctxA.clearRect(moveA,390,120,70);
+	  moveA-=20;
+	  ctxA.rect(moveA,390,120,70);
+	  ctxA.drawImage(spikeA,spikeX,spikeY,270,258,moveA,390,120,70);
+	  if(moveA<=-120)
+	  {
+	     counter++;
+	     moveB=1300;
+	  }
+	}
+	if(counter==1)
+	{
+	  ctxA.clearRect(moveB,390,120,70);
+	  moveB-=20;
+	  ctxA.rect(moveB,390,120,70);
+	  ctxA.drawImage(spikeB,spikeX,spikeY,270,258,moveB,390,120,70);
+	  if(moveB<-120)
+	  {
+	     counter++;
+	     moveC=1300;
+	  }
+	}
+	if(counter==2)
+	{
+	  ctxA.clearRect(moveC,390,120,70);
+	  moveC-=20;
+	  ctxA.rect(moveC,390,120,70);
+	  ctxA.drawImage(spikeC,spikeX,spikeY,270,258,moveC,390,120,70);
+	  if(moveC<-120)
+	  {
+	     counter++;
+	     moveD=1300;
+	  }
+	}
+	if(counter==3)
+	{
+	  ctxA.clearRect(moveD,390,120,70);
+	  moveD-=20;
+	  ctxA.rect(moveD,390,120,70);
+	  ctxA.drawImage(spikeD,spikeX,spikeY,270,258,moveD,390,120,70);
+	  if(moveD<=-120)
+	  {
+	     counter=0;
+	     moveA=1300;
+	  }
+	}
+
+}
+}
+function jumpMan()
+{
+if(i%3==0)
+   {
+   sourceX = x*165;
+   sourceY = y*292.57;
+   destY = t*180;
+   context.clearRect(0,destY,165,500);
+   context.rect(0,destY,165,500);
+   context.drawImage(bob, sourceX, sourceY,165 , 292.57, 0, destY, 165, 292.57);
+   x++;
+   if(x==12)
+   {
+      x=0;
+      j++;
+      if(j%2==0)
+      	y=1;
+      else
+      	y=0;
+   }
+   k=k-0.1;
+   if(k<0)
+   	  t=-k;
+   else
+   		t=k;
+   if(t>1)
+   {
+   	  count=1;
+   }
+   if(((moveA>=-10&&moveA<=90)||(moveB>=-10&&moveB<=90)||(moveC>=-10&&moveC<=90)||(moveD>=-10&&moveD<=90))&&(destY>125))
+   {
+   alert("Game over");
+   newCounter=1;
+   }
+}
+i++;
+}
+function render2(){
+	if(count==0)
+	{
+		drawImage();
+		jumpMan();
+		addObstacles();
+		if(newCounter==0)
+	       request2=window.requestAnimationFrame(render2);
+	    else
+		   window.cancelAnimationFrame(request2);
+	}
+	else{
+		y=0;
+		j=0;
+		window.cancelAnimationFrame(request2);
+		render();
+	}
+}
+document.body.onkeyup=function(e){
+	if(e.keyCode==32)
+	{
+		count=0;
+		k=1;
+		t=1;
+	  window.cancelAnimationFrame(request1);
+	  render2();
+	}
+}
+</script>
+</body>
+</html>
