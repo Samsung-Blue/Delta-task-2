@@ -15,17 +15,33 @@
 	position:absolute;
     z-index: 10;
 }
+#pause{
+	width: 150px;
+	height: 50px;
+	text-align: center;
+	padding-top: 15px;
+	font-size: 22px;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: brush script mt;
+    z-index:15;
+    background-color: orange;
+    color: black;
+    border-radius: 5px;
+}
 </style>
 </head>
 <body>
-<canvas id="canvas">
-</canvas>
+<canvas id="canvas"></canvas>
 <canvas id="inner"></canvas>
 <canvas id="outer"></canvas>
+<div id="pause" onclick="pause(this)">START</div>
 <script>
 var canvas = document.getElementById("canvas");
 var inner = document.getElementById("inner");
 var outer = document.getElementById("outer");
+var start = document.getElementById("pause");
 var ctx= canvas.getContext("2d");
 var context = inner.getContext("2d");
 var ctxA=outer.getContext("2d");
@@ -62,15 +78,14 @@ bob.style.zIndex= "10";
 img.addEventListener("load",drawImage);
 bob.addEventListener("load",drawMan);
 spikeB.addEventListener("load",addObstacles);
-window.requestAnimationFrame(render);
+context.font = "22px brush script mt";
 var speed =-4;
 var moveA,moveB,moveC,moveD;
 moveA=1400;
 moveB=1400;
 moveC=1400;
 moveD=1400;
-var x=0,i=0,y=0,j=0,count=0,k=1,t=1;
-var x1=0,y1=0,i1=0;
+var x=0,i=0,y=0,j=0,count=1,k=1,t=1,flag=0,restart=0;
 var request1,request2;
 var spikeX,spikeY;
 function render(){
@@ -118,6 +133,9 @@ if((moveA>=-10&&moveA<=90)||(moveB>=-10&&moveB<=90)||(moveC>=-10&&moveC<=90)||(m
 {
    alert("Game over");
    newCounter=1;
+   restart=1;
+   start.innerHTML="RESTART";
+   pause();
 }
 i++;
 }
@@ -211,6 +229,9 @@ if(i%3==0)
    {
    alert("Game over");
    newCounter=1;
+   restart=1;
+   start.innerHTML="RESTART";
+   pause();
    }
 }
 i++;
@@ -233,6 +254,48 @@ function render2(){
 		render();
 	}
 }
+function pause(pause)
+{
+  if(flag%2==0&&flag!=0&&restart==0)
+		{
+		   newCounter=1;
+		   render();
+		   render2();
+		   pause.innerHTML="CONTINUE";
+		   flag++;
+		}
+	else if(flag==0&&restart==0)
+	{
+		window.requestAnimationFrame(render);
+		flag=2;
+		pause.innerHTML="PAUSE";
+	}
+	else if(restart==1)
+	{
+		ctxA.clearRect(moveA,390,120,70);
+		ctxA.clearRect(moveB,390,120,70);
+		ctxA.clearRect(moveC,390,120,70);
+		ctxA.clearRect(moveD,390,120,70);
+		moveA=1400;
+        moveB=1400;
+        moveC=1400;
+        moveD=1400;
+        x=0;i=0;y=0;j=0;count=1;k=1;t=1;flag=1;restart=0;
+        newCounter=1;
+        window.requestAnimationFrame(render);
+	}
+		else if(flag%2!=0&&restart==0)
+		{
+          newCounter=0;
+          flag++;
+          pause.innerHTML="PAUSE";
+          if(count==0)
+          	render2();
+          else
+          	render();
+		}
+
+}
 document.body.onkeyup=function(e){
 	if(e.keyCode==32)
 	{
@@ -241,6 +304,25 @@ document.body.onkeyup=function(e){
 		t=1;
 	  window.cancelAnimationFrame(request1);
 	  render2();
+	}
+	else if(e.keycode==27)
+	{
+		if(flag%2==0)
+		{
+		   newCounter=1;
+		   render();
+		   render2();
+		   flag++;
+		}
+		else
+		{
+          newCounter=0;
+          if(count==0)
+          	window.requestAnimationFrame(render2);
+          else
+          	window.requestAnimationFrame(render);
+		}
+
 	}
 }
 </script>
