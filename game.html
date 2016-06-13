@@ -3,73 +3,77 @@
 <head>
 <title>Game</title>
 <style>
- #canvas {
-    border:1px solid #dfdfdf;
-    position:absolute;
-}
-#inner{
-    position:absolute;
-    z-index: 10;
-}
-#outer{
-	position:absolute;
-    z-index: 10;
-}
-#pause{
-	width: 150px;
-	height: 50px;
-	text-align: center;
-	padding-top: 15px;
-	font-size: 22px;
-    position: absolute;
-    margin-left: 500px;
-    font-family: brush script mt;
-    z-index:15;
-    background-color: orange;
-    color: black;
-    border-radius: 5px;
-}
-#pointtext{
-    width: 150px;
-	height: 50px;
-	text-align: center;
-	padding-top: 15px;
-	font-size: 22px;
-    position: absolute;
-    font-family: brush script mt;
-    z-index:15;
-    background-color: orange;
-    color: black;
-    border-radius: 5px;
-}
-#points{
-	width: 60px;
-	height: 40px;
-	font-size: 32;
-	background-color: black;
-	color: orange;
-	margin-left: 150px;
-	position: absolute;
-	border-radius: 5px;
-	padding-top: 22px;
-	text-align: center;
-}
+/*CSS Styling*/
+   #canvas {
+       border:1px solid #dfdfdf;
+       position:absolute;
+    }
+    #inner{
+       position:absolute;
+       z-index: 10;
+    }
+    #outer{
+	   position:absolute;
+       z-index: 10;
+    }
+    #pause{
+	   width: 150px;
+	   height: 50px;
+	   text-align: center;
+	   padding-top: 15px;
+	   font-size: 22px;
+	   position: absolute;
+	   margin-left: 500px;
+	   font-family: brush script mt;
+	   z-index:15;
+	   background-color: orange;
+	   color: black;
+	   border-radius: 5px;
+	   margin-top: 10px;
+    }
+    #pointtext{
+       width: 150px;
+       height: 50px;
+       text-align: center;
+       padding-top: 15px;
+       font-size: 22px;
+       position: absolute;
+       font-family: brush script mt;
+       z-index:15;
+       background-color: orange;
+       color: black;
+       border-radius: 5px;
+    }
+    #points{
+	   width: 60px;
+	   height: 40px;
+	   font-size: 32;
+	   background-color: black;
+	   color: orange;
+	   margin-left: 150px;
+	   position: absolute;
+	   border-radius: 5px;
+	   padding-top: 22px;
+	   text-align: center;
+    }
 </style>
 </head>
 <body>
-<audio> <source src="Kalimba.mp3" type="audio/mpeg"></audio>
-<canvas id="canvas"></canvas>
-<canvas id="inner"></canvas>
-<canvas id="outer"></canvas>
-<div id="pause" onclick="pause(this)">START</div>
-<div id="pointtext">POINTS:</div>
-<div id="points"></div>
+  <canvas id="canvas"></canvas>
+  <canvas id="inner"></canvas>
+  <canvas id="outer"></canvas>
+  <div id="pause" onclick="pause(this)">START</div>
+  <audio id="music" autoplay="autoplay" loop="loop"><source src="contra.mp3"></audio>
+  <div id="pointtext">POINTS:</div>
+  <div id="points"></div>
 <script>
+//Declaration of variables
 var canvas = document.getElementById("canvas");
 var inner = document.getElementById("inner");
 var outer = document.getElementById("outer");
 var start = document.getElementById("pause");
 var point = document.getElementById("points");
+var music = document.getElementById("music");
 var ctx= canvas.getContext("2d");
 var context = inner.getContext("2d");
 var ctxA=outer.getContext("2d");
@@ -118,6 +122,7 @@ var points=0;
 var request1,request2;
 var spikeX,spikeY;
 point.innerHTML=points;
+//Render funcion called every frame
 function render(){
 	drawImage();
 	drawMan();
@@ -127,6 +132,7 @@ function render(){
 	else
 		window.cancelAnimationFrame(request1);
 }
+//drawImage to draw the background image
 function drawImage()
 {
 setTimeout(function(){
@@ -140,6 +146,7 @@ ctx.translate(speed,0);
 newTime=window.performance.now()-time;
 },newTime);
 }
+//drawMan function to draw the character
 function drawMan(){
    if(i%3==0)
    {
@@ -169,6 +176,7 @@ if((moveA>=-10&&moveA<=90)||(moveB>=-10&&moveB<=90)||(moveC>=-10&&moveC<=90)||(m
 }
 i++;
 }
+//Function to add obstacles
 function addObstacles()
 {
 	if(i%3==0)
@@ -234,6 +242,7 @@ function addObstacles()
 
 }
 }
+//Function to make the character jump on pressing space bar
 function jumpMan()
 {
 if(i%3==0)
@@ -274,6 +283,7 @@ if(i%3==0)
 }
 i++;
 }
+//render2 is called every frame when the character is jumping
 function render2(){
 	if(count==0)
 	{
@@ -292,6 +302,7 @@ function render2(){
 		render();
 	}
 }
+//Pause/Start/Restart button
 function pause(pause)
 {
   if(flag%2==0&&flag!=0&&restart==0)
@@ -326,7 +337,9 @@ function pause(pause)
 		else if(flag%2!=0&&restart==0)
 		{
           if(flag==1)
+            {
           	point.innerHTML=points;
+          	}
           newCounter=0;
           flag++;
           pause.innerHTML="PAUSE";
@@ -337,14 +350,18 @@ function pause(pause)
 		}
 
 }
+//Space bar key pressed
 document.body.onkeyup=function(e){
 	if(e.keyCode==32)
 	{
-		count=0;
-		k=1;
-		t=1;
-	  window.cancelAnimationFrame(request1);
-	  render2();
+		if(count==1)
+		{
+		 count=0;
+		 k=1;
+		 t=1;
+	     window.cancelAnimationFrame(request1);
+	     render2();
+	 }
 	}
 	else if(e.keycode==27)
 	{
