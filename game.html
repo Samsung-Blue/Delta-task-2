@@ -22,26 +22,54 @@
 	padding-top: 15px;
 	font-size: 22px;
     position: absolute;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 500px;
     font-family: brush script mt;
     z-index:15;
     background-color: orange;
     color: black;
     border-radius: 5px;
 }
+#pointtext{
+    width: 150px;
+	height: 50px;
+	text-align: center;
+	padding-top: 15px;
+	font-size: 22px;
+    position: absolute;
+    font-family: brush script mt;
+    z-index:15;
+    background-color: orange;
+    color: black;
+    border-radius: 5px;
+}
+#points{
+	width: 60px;
+	height: 40px;
+	font-size: 32;
+	background-color: black;
+	color: orange;
+	margin-left: 150px;
+	position: absolute;
+	border-radius: 5px;
+	padding-top: 22px;
+	text-align: center;
+}
 </style>
 </head>
 <body>
+<audio> <source src="Kalimba.mp3" type="audio/mpeg"></audio>
 <canvas id="canvas"></canvas>
 <canvas id="inner"></canvas>
 <canvas id="outer"></canvas>
 <div id="pause" onclick="pause(this)">START</div>
+<div id="pointtext">POINTS:</div>
+<div id="points"></div>
 <script>
 var canvas = document.getElementById("canvas");
 var inner = document.getElementById("inner");
 var outer = document.getElementById("outer");
 var start = document.getElementById("pause");
+var point = document.getElementById("points");
 var ctx= canvas.getContext("2d");
 var context = inner.getContext("2d");
 var ctxA=outer.getContext("2d");
@@ -86,8 +114,10 @@ moveB=1400;
 moveC=1400;
 moveD=1400;
 var x=0,i=0,y=0,j=0,count=1,k=1,t=1,flag=0,restart=0;
+var points=0;
 var request1,request2;
 var spikeX,spikeY;
+point.innerHTML=points;
 function render(){
 	drawImage();
 	drawMan();
@@ -155,6 +185,8 @@ function addObstacles()
 	  {
 	     counter++;
 	     moveB=1300;
+	     points++;
+	     point.innerHTML=points;
 	  }
 	}
 	if(counter==1)
@@ -167,6 +199,8 @@ function addObstacles()
 	  {
 	     counter++;
 	     moveC=1300;
+	     points++;
+	     point.innerHTML=points;
 	  }
 	}
 	if(counter==2)
@@ -179,6 +213,8 @@ function addObstacles()
 	  {
 	     counter++;
 	     moveD=1300;
+	     points++;
+	     point.innerHTML=points;
 	  }
 	}
 	if(counter==3)
@@ -191,6 +227,8 @@ function addObstacles()
 	  {
 	     counter=0;
 	     moveA=1300;
+	     points++;
+	     point.innerHTML=points;
 	  }
 	}
 
@@ -281,11 +319,14 @@ function pause(pause)
         moveC=1400;
         moveD=1400;
         x=0;i=0;y=0;j=0;count=1;k=1;t=1;flag=1;restart=0;
+        points=0;
         newCounter=1;
         window.requestAnimationFrame(render);
 	}
 		else if(flag%2!=0&&restart==0)
 		{
+          if(flag==1)
+          	point.innerHTML=points;
           newCounter=0;
           flag++;
           pause.innerHTML="PAUSE";
